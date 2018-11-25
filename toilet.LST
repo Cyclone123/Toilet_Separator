@@ -1,0 +1,378 @@
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 1   
+
+
+C51 COMPILER V7.06, COMPILATION OF MODULE TOILET
+OBJECT MODULE PLACED IN toilet.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE toilet.c BROWSE DEBUG OBJECTEXTEND
+
+stmt level    source
+
+   1          /*------------------------------------------------------------------*/
+   2          /* --- STC MCU Limited ---------------------------------------------*/
+   3          /* --- STC12C56xx Series Programmable Clock Output Demo ------------*/
+   4          /* --- Mobile: (86)13922805190 -------------------------------------*/
+   5          /* --- Fax: 86-0513-55012956,55012947,55012969 ---------------------*/
+   6          /* --- Tel: 86-0513-55012928,55012929,55012966----------------------*/
+   7          /* --- Web: www.STCMCU.com -----------------------------------------*/
+   8          /* --- Web: www.GXWMCU.com -----------------------------------------*/
+   9          /* If you want to use the program or the program referenced in the  */
+  10          /* article, please specify in which data and procedures from STC    */
+  11          /*------------------------------------------------------------------*/
+  12          
+  13          //20180824ÐÞ¸Ä°æ£¬¸ù¾Ý³öÏÖµÄÎÊÌâ£¬µ÷Õû¾«È·¶¨Ê±Ê±¼ä£¬µç»úÇ°½øºóÍË¶¼ÊÇ6Ãë£¬ÖÐ¼ä¼ä¸ô4Ãë¡£
+  14          //ÎªÁË·ÀÖ¹ÏÞÎ»Æ÷¹ÊÕÏ£¬µ¼ÖÂµç»ú²»¶¯×÷¡£ÏÖ½«Âß¼­ÐÞ¸ÄÎª£ºµç»úÏÖ¶¯×÷5Ãë£¬ÔÙÅÐ¶Ïµ½´ïÏÞÎ»¿ª¹Ø¡£
+  15          
+  16          //20180825ÐÞ¸Ä°æ£¬Ìí¼ÓÉÏµçºóµç»ú×Ô¶¯ÔËÐÐÒ»¸öÁ÷³Ì£¬ÓÃÓÚÈ·¶¨µç»úµçÂ·ÊÇ·ñÕý³£¡£
+  17          //20180827ÐÞ¸Ä£¬½«¶¨Ê±Ê±¼äÓÉ7Ãë¸ÄÎª6Ãë£¬Ô­Ê±¼ä½Ï³¤¡£
+  18          //20180923ÐÞ¸Ä£¬»¹ÊÇÓÃÐÐ³Ì¿ª¹ØÀ´È·¶¨µç»ú¹¤×÷Î»ÖÃ¡£²¢°Ñµç»úÔËÐÐÊ±¼ä¼Ó³¤(15Ãë)£¬·ÀÖ¹ÏÞÎ»Ê§Áé£¬³ÌÐòËÀÑ­»·
+  19          //20181008ÐÞ¸Ä£¬µç»úÔËÐÐÊ±¼ä¹ý³¤£¬µ¼ÖÂµç»úÉùÒôÌ«´ó£¬ÏÖÔÚ¼õÐ¡Ê±¼äµ½9Ãë
+  20          //20181112ÐÞ¸Ä£¬»»½Ó½ü¿ª¹Ø´«¸ÐÆ÷(³£±Õ)£¬ÖØÐÂ²âÊÔ¡£´«¸ÐÆ÷Á½´Î¼ì²âÏÞÎ»£¬·ÀÖ¹¸ÉÈÅ
+  21          
+  22          #include "STC12C20XX.h"
+  23          
+  24          sbit Watchdog=P3^7;             //¿´ÃÅ¹·Êä³ö
+  25          
+  26          sbit Relay1=P3^0;  
+  27          sbit Relay2=P3^1;  
+  28          
+  29          sbit Forward  =P1^7;            //µç»ú·´×ªÏÞÎ»¿ª¹Øµã
+  30          sbit Backward =P1^6;            //µç»úÁãÎ»ÏÞÎ»¿ª¹Øµã 
+  31          sbit Button   =P1^4;  
+  32          
+  33          sbit InOut1=P1^0;  
+  34          sbit InOut2=P1^1;  
+  35          sbit InOut3=P1^2;  
+  36          sbit InOut4=P1^3;  
+  37          
+  38          
+  39          unsigned int Timer_1mS;
+  40          unsigned int Timer_1S;
+  41          unsigned int TimerOut;
+  42          
+  43          void Delay_ms (unsigned int a);
+  44          void Delay_4S(void);
+  45          void Timer0Init (void);
+  46          void RelayOutInit (void);
+  47          void StepLightInit(void);
+  48          
+  49          void StepLight(unsigned int Step);
+  50          
+  51          unsigned int PutButtonDown(void);
+  52          unsigned int GetPointForward(void);
+  53          unsigned int GetPointBackward(void);
+  54          
+  55          void MotorMotionForward(void);
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 2   
+
+  56          void MotorMotionReverse(void);
+  57          void MotorStopMotion(void);
+  58          void MotorMotionHome(void);
+  59          
+  60          
+  61          /*--------------------------------------Ö÷º¯Êý--------------------------------------*/
+  62          void main(void)
+  63          {
+  64   1              Timer0Init(); 
+  65   1      
+  66   1              ET0=1;                  //¿ª¶¨Ê±Æ÷ÖÐ¶Ï
+  67   1              EA=1;                   //¿ª×ÜÖÐ¶Ï
+  68   1              TR0=1;                  //Æô¶¯¶¨Ê±Æ÷
+  69   1      
+  70   1              RelayOutInit();
+  71   1              StepLightInit();
+  72   1      
+  73   1              Timer_1mS= 0 ;
+  74   1              Timer_1S = 0 ;
+  75   1              TimerOut = 0 ;
+  76   1      
+  77   1              MotorMotionHome();
+  78   1              Delay_4S();
+  79   1              MotorMotionForward();
+  80   1              Delay_4S();
+  81   1              MotorStopMotion();
+  82   1              Delay_4S();
+  83   1              MotorMotionReverse();
+  84   1              Delay_4S();
+  85   1      
+  86   1              while(1)
+  87   1              {
+  88   2                      StepLight(1);
+  89   2                      while(!PutButtonDown());
+  90   2      
+  91   2                      StepLight(2);
+  92   2                      MotorMotionForward();
+  93   2      
+  94   2                      StepLight(3);
+  95   2                      MotorStopMotion();
+  96   2                      Delay_4S();
+  97   2      
+  98   2                      StepLight(4);
+  99   2                      MotorMotionReverse();
+ 100   2      
+ 101   2                      Delay_4S();
+ 102   2              }
+ 103   1      }
+ 104          
+ 105          
+ 106          /*-----------------------------------ÖÐ¶Ï·þÎñ³ÌÐò-----------------------------------*/
+ 107          void Timer0_Rountine(void) interrupt 1 
+ 108          {
+ 109   1              TH0=0xFE;       
+ 110   1              TL0=0x3E;                               //ÖØÐÂ×°ÔØ¶¨Ê±Æ÷Ê±»ùÖµ
+ 111   1      
+ 112   1          Timer_1mS++;
+ 113   1      
+ 114   1              if (Timer_1mS==1000)
+ 115   1              {                                                       //¶¨Ê±Æ÷Ñ­»·¼ÆÊý1000´ÎÎªÒ»Ãë
+ 116   2                      Timer_1mS=0;                    //´ÎÊýÇåÁã£¬´ÓÐÂÑ­»·¼ÆÊý
+ 117   2                      Timer_1S++;                             //Ãë¼ÓÒ»
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 3   
+
+ 118   2                      Watchdog=~Watchdog;             //Î¹¹·
+ 119   2              }
+ 120   1      
+ 121   1              if(Timer_1S >= 15)      //µ±µç»úÔËÐÐÊ±¼ä³¬¹ý´ËÉè¶¨Ê±¼äºó£¬ÖÃÎ»±êÖ¾Î»TimeOut.±£»¤µç»ú(·ÀÖ¹´«¸ÐÆ÷¹ÊÕÏµ¼ÖÂµç»ú³¤Ê
+             -±¼äÔËÐÐ)
+ 122   1              {
+ 123   2                      Timer_1S = 0;
+ 124   2                      TimerOut = 1 ;
+ 125   2              }       
+ 126   1      }
+ 127          
+ 128          
+ 129          /*----------------------------------¶¨Ê±Æ÷³õÊ¼»¯º¯Êý----------------------------------*/
+ 130          void Timer0Init (void)
+ 131          {   
+ 132   1              TMOD=0x01;                              //¶¨Ê±Æ÷¹¤×÷·½Ê½1:16Î»
+ 133   1      
+ 134   1              TH0=0xFE;       
+ 135   1              TL0=0x3E;                                       //¶¨Ê±Ê±¼ä1ms
+ 136   1      } 
+ 137          
+ 138          
+ 139          /*----------------------------------¼ÌµçÆ÷/Êä³ö¿Ú³õÊ¼»¯º¯Êý----------------------------------*/
+ 140          void RelayOutInit (void)
+ 141          {   
+ 142   1              P3M0=0x00;                              //P3¿Ú¹¤×÷·½Ê½:Ç¿ÍÆÍìÊä³ö
+ 143   1              P3M1=0xff;      
+ 144   1      
+ 145   1              Relay1=1;  
+ 146   1              Relay2=1;  
+ 147   1      } 
+ 148          
+ 149          
+ 150          /*----------------------------------ÔËÐÐ²½ÖèÖ¸Ê¾LEDµÆÊä³ö¿Ú³õÊ¼»¯º¯Êý----------------------------------*/
+ 151          void StepLightInit(void)
+ 152          {
+ 153   1              P1M0=0x00;                              //P1¿Ú¹¤×÷·½Ê½:Ç¿ÍÆÍìÊä³ö
+ 154   1              P1M1=0x0f;      
+ 155   1      
+ 156   1              InOut1=1;  
+ 157   1              InOut2=1;  
+ 158   1              InOut3=1;  
+ 159   1              InOut4=1;  
+ 160   1      }
+ 161          
+ 162          /*-------------------------------------ÑÓÊ±º¯Êý-------------------------------------*/
+ 163          void Delay_ms (unsigned int a)
+ 164          {
+ 165   1              unsigned int i;
+ 166   1              while( --a != 0)
+ 167   1              {
+ 168   2                      for(i = 0; i < 600; i++);
+ 169   2              }
+ 170   1      }
+ 171          
+ 172          
+ 173          /*-------------------------------------³¤ÑÓÊ±º¯Êý-------------------------------------*/
+ 174          void Delay_4S()
+ 175          {
+ 176   1              Delay_ms(1000);
+ 177   1              //Delay_ms(1000);
+ 178   1      }
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 4   
+
+ 179          
+ 180          
+ 181          /*----------------------------------Æô¶¯°´Å¥¼ì²âº¯Êý----------------------------------*/
+ 182          //µ±°´Å¦°´ÏÂ£¬º¯Êý·µ»Ø1£»·ñÔò£¬º¯Êý·µ»Ø0
+ 183          unsigned int PutButtonDown(void)
+ 184          {
+ 185   1              unsigned int Flag;
+ 186   1              Flag = 0 ;
+ 187   1      
+ 188   1              if(Button==0)
+ 189   1              {
+ 190   2                      Delay_ms(100);
+ 191   2      
+ 192   2                      if(Button==0)
+ 193   2                              Flag = 1 ;
+ 194   2              }
+ 195   1      
+ 196   1              return (Flag);
+ 197   1      }
+ 198          
+ 199          
+ 200          /*----------------------------------¹¤×÷²½ÖèÖ¸Ê¾LEDÏÔÊ¾º¯Êý----------------------------------*/
+ 201          void StepLight(unsigned int Step)
+ 202          {
+ 203   1              switch(Step)
+ 204   1              {
+ 205   2                      case 1: InOut1=0;
+ 206   2                                      InOut2=1;
+ 207   2                                      InOut3=1;
+ 208   2                                      InOut4=1;
+ 209   2                                      break;
+ 210   2                      case 2: InOut1=1;
+ 211   2                                      InOut2=0;
+ 212   2                                      InOut3=1;
+ 213   2                                      InOut4=1;
+ 214   2                                      break;
+ 215   2                      case 3: InOut1=1;
+ 216   2                                      InOut2=1;
+ 217   2                                      InOut3=0;
+ 218   2                                      InOut4=1;
+ 219   2                                      break;
+ 220   2                      case 4: InOut1=1;
+ 221   2                                      InOut2=1;
+ 222   2                                      InOut3=1;
+ 223   2                                      InOut4=0;
+ 224   2                                      break;
+ 225   2                      default:InOut1=1;
+ 226   2                                      InOut2=1;
+ 227   2                                      InOut3=1;
+ 228   2                                      InOut4=1;
+ 229   2              }
+ 230   1      }
+ 231          
+ 232          
+ 233          
+ 234          /*----------------------------------µç»úÏòÇ°¶¯×÷µ½Í£Ö¹µãº¯Êý----------------------------------*/
+ 235          void MotorMotionForward(void)
+ 236          {
+ 237   1              Relay1 =1;
+ 238   1              Relay2 =0;
+ 239   1      
+ 240   1              Timer_1mS=0;
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 5   
+
+ 241   1              Timer_1S =0;
+ 242   1              TimerOut =0;
+ 243   1      
+ 244   1              while(Timer_1S<4);      //µç»úÏÈÔËÐÐ4Ãëºó£¬ÔÙÅÐ¶ÏÊÇ·ñµ½´ïÏÞÎ»µã£¬·ÀÖ¹ÒòÎª¸ÉÈÅ£¬Îó´¥·¢´«¸ÐÆ÷
+ 245   1      
+ 246   1              while(!GetPointForward());
+ 247   1      
+ 248   1              Relay1 =1;
+ 249   1              Relay2 =1;
+ 250   1      }
+ 251          
+ 252          
+ 253          /*----------------------------------µç»úÏòºó¶¯×÷µ½Í£Ö¹µãº¯Êý----------------------------------*/
+ 254          void MotorMotionReverse(void)
+ 255          {
+ 256   1              Relay1 =0;
+ 257   1              Relay2 =1;
+ 258   1      
+ 259   1              Timer_1mS=0;
+ 260   1              Timer_1S =0;
+ 261   1              TimerOut =0;
+ 262   1      
+ 263   1              while(Timer_1S<4);      //µç»úÏÈÔËÐÐ4Ãëºó£¬ÔÙÅÐ¶ÏÊÇ·ñµ½´ïÏÞÎ»µã£¬·ÀÖ¹ÒòÎª¸ÉÈÅ£¬Îó´¥·¢´«¸ÐÆ÷
+ 264   1      
+ 265   1              while(!GetPointBackward());
+ 266   1      
+ 267   1              Relay1 =1;
+ 268   1              Relay2 =1;
+ 269   1      }
+ 270          
+ 271          
+ 272          /*----------------------------------µç»úÍ£Ö¹¶¯×÷º¯Êý----------------------------------*/
+ 273          void MotorStopMotion(void)
+ 274          {
+ 275   1              Relay1 =1;
+ 276   1              Relay2 =1;
+ 277   1      }
+ 278          
+ 279          
+ 280          
+ 281          /*----------------------------------µç»ú»Øµ½³õÊ¼Î»ÖÃº¯Êý----------------------------------*/
+ 282          void MotorMotionHome(void)
+ 283          {
+ 284   1      
+ 285   1              Relay1 =0;
+ 286   1              Relay2 =1;
+ 287   1      
+ 288   1              Timer_1mS=0;
+ 289   1              Timer_1S =0;
+ 290   1              TimerOut =0;
+ 291   1      
+ 292   1              while(!GetPointBackward());
+ 293   1      
+ 294   1              Relay1 =1;
+ 295   1              Relay2 =1;
+ 296   1      
+ 297   1      }
+ 298          
+ 299          
+ 300          /*----------------------------------µç»úµ½´ïÇ°Í£Ö¹µã¼ì²âº¯Êý----------------------------------*/
+ 301          //µç»úµ½´ïÇ°Í£Ö¹Î»£¬º¯Êý·µ»Ø1£»·ñÔòº¯Êý·µ»Ø0
+ 302          unsigned int GetPointForward(void)
+C51 COMPILER V7.06   TOILET                                                                11/12/2018 14:45:44 PAGE 6   
+
+ 303          {
+ 304   1              unsigned int Point;
+ 305   1              
+ 306   1              Point=0;
+ 307   1              
+ 308   1              if(Forward==1 || TimerOut==1)           //³£±Õ´«¸ÐÆ÷£¬µ±µ²°å½Ó´¥µ½´«¸ÐÆ÷ºó£¬¶Ï¿ª£¬IO=1.
+ 309   1              {       
+ 310   2      
+ 311   2                      Delay_ms(100);
+ 312   2      
+ 313   2                      if(Forward==1 || TimerOut==1)
+ 314   2                              Point=1;
+ 315   2              }
+ 316   1      
+ 317   1              return(Point);
+ 318   1      }
+ 319          
+ 320          
+ 321          /*----------------------------------µç»úµ½´ïºóÍ£Ö¹µã¼ì²âº¯Êý----------------------------------*/
+ 322          //µç»úµ½´ïºóÍ£Ö¹Î»£¬º¯Êý·µ»Ø1£»·ñÔòº¯Êý·µ»Ø0
+ 323          unsigned int GetPointBackward(void)
+ 324          {
+ 325   1              unsigned int Point;
+ 326   1              
+ 327   1              Point=0;
+ 328   1              
+ 329   1              if(Backward==1 || TimerOut==1)          //³£±Õ´«¸ÐÆ÷£¬µ±µ²°å½Ó´¥µ½´«¸ÐÆ÷ºó£¬¶Ï¿ª£¬IO=1.
+ 330   1              {       
+ 331   2      
+ 332   2                      Delay_ms(100);
+ 333   2      
+ 334   2                      if(Backward==1 || TimerOut==1)
+ 335   2                              Point=1;
+ 336   2              }
+ 337   1      
+ 338   1              return(Point);
+ 339   1      }
+ 340          
+ 341          
+ 342          
+ 343          
+ 344          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    518    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
