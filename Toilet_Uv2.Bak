@@ -29,7 +29,7 @@ Options 1,0,0  // Target 'Target 1'
  EnvLib ()
  EnvReg (ÿSTC\)
  OrgReg (ÿSTC\)
- TgStat=8
+ TgStat=11
  OutDir (.\)
  OutName (Toilet)
  GenApp=1

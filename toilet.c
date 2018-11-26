@@ -10,26 +10,24 @@
 /* article, please specify in which data and procedures from STC    */
 /*------------------------------------------------------------------*/
 
+//20180824修改版，根据出现的问题，调整精确定时时间，电机前进后退都是6秒，中间间隔4秒。
+//为了防止限位器故障，导致电机不动作。现将逻辑修改为：电机现动作5秒，再判断到达限位开关。
+
+//20180825修改版，添加上电后电机自动运行一个流程，用于确定电机电路是否正常。
+//20180827修改，将定时时间由7秒改为6秒，原时间较长。
+//20180923修改，还是用行程开关来确定电机工作位置。并把电机运行时间加长(15秒)，防止限位失灵，程序死循环
+//20181008修改，电机运行时间过长，导致电机声音太大，现在减小时间到9秒
+
 #include "STC12C20XX.h"
 
-
-sbit Watchdog=P3^7;  //看门狗输出
+sbit Watchdog=P3^7;  		//看门狗输出
 
 sbit Relay1=P3^0;  
 sbit Relay2=P3^1;  
 
-//第一版的电路板的行程开关和按钮的定义
-//sbit Forward  =P1^4;  
-//sbit Backward =P1^5;  
-//sbit Button   =P1^7;  
-
 sbit Forward  =P1^7;  		//电机反转限位开关点
 sbit Backward =P1^6; 		//电机零位限位开关点 
 sbit Button   =P1^4;  
-
-
-
-
 
 sbit InOut1=P1^0;  
 sbit InOut2=P1^1;  
@@ -37,12 +35,12 @@ sbit InOut3=P1^2;
 sbit InOut4=P1^3;  
 
 
-unsigned int Timer_50mS;
+unsigned int Timer_1mS;
 unsigned int Timer_1S;
 unsigned int TimerOut;
 
 void Delay_ms (unsigned int a);
-void Delay_2S(void);
+void Delay_4S(void);
 void Timer0Init (void);
 void RelayOutInit (void);
 void StepLightInit(void);
@@ -71,11 +69,18 @@ void main(void)
 	RelayOutInit();
 	StepLightInit();
 
-	Timer_50mS= 0 ;
+	Timer_1mS= 0 ;
 	Timer_1S = 0 ;
 	TimerOut = 0 ;
 
 	MotorMotionHome();
+	Delay_4S();
+	MotorMotionForward();
+	Delay_4S();
+	MotorStopMotion();
+	Delay_4S();
+	MotorMotionReverse();
+	Delay_4S();
 
 	while(1)
 	{
@@ -87,12 +92,12 @@ void main(void)
 
 		StepLight(3);
 		MotorStopMotion();
-		Delay_2S();
+		Delay_4S();
 
 		StepLight(4);
 		MotorMotionReverse();
 
-		Delay_2S();
+		Delay_4S();
 	}
 }
 
@@ -100,24 +105,23 @@ void main(void)
 /*-----------------------------------中断服务程序-----------------------------------*/
 void Timer0_Rountine(void) interrupt 1 
 {
-	TH0=0x3C;			//重新装载定时器时基值
-	TL0=0xB0;
+	TH0=0xFE;	
+	TL0=0x3E;				//重新装载定时器时基值
 
-    Timer_50mS++;
+    Timer_1mS++;
 
-	if (Timer_50mS==20)
-	{					//定时器循环计数20次为一秒
-		Timer_50mS=0;	//次数清零，从新循环计数
-		Timer_1S++;		//秒加一
+	if (Timer_1mS==1000)
+	{							//定时器循环计数1000次为一秒
+		Timer_1mS=0;			//次数清零，从新循环计数
+		Timer_1S++;				//秒加一
+		Watchdog=~Watchdog;		//喂狗
 	}
 
-	if(Timer_1S >= 20)	//当电机运行时间超过此设定时间后，置位标志位TimeOut.
+	if(Timer_1S >= 9)	//当电机运行时间超过此设定时间后，置位标志位TimeOut.
 	{
 		Timer_1S = 0;
 		TimerOut = 1 ;
-	}
-
-	Watchdog=~Watchdog;		//喂狗
+	}	
 }
 
 
@@ -126,8 +130,8 @@ void Timer0Init (void)
 {   
 	TMOD=0x01;				//定时器工作方式1:16位
 
-	TH0=(65536-50000)/256;	//定时时间50ms
-	TL0=(65536-50000)%256;
+	TH0=0xFE;	
+	TL0=0x3E;					//定时时间1ms
 } 
 
 
@@ -148,10 +152,10 @@ void StepLightInit(void)
 	P1M0=0x00;				//P1口工作方式:强推挽输出
 	P1M1=0x0f;	
 
-	InOut1=0;  
-	InOut2=0;  
-	InOut3=0;  
-	InOut4=0;  
+	InOut1=1;  
+	InOut2=1;  
+	InOut3=1;  
+	InOut4=1;  
 }
 
 /*-------------------------------------延时函数-------------------------------------*/
@@ -166,10 +170,10 @@ void Delay_ms (unsigned int a)
 
 
 /*-------------------------------------长延时函数-------------------------------------*/
-void Delay_2S()
+void Delay_4S()
 {
 	Delay_ms(1000);
-	Delay_ms(1000);
+	//Delay_ms(1000);
 }
 
 
@@ -197,30 +201,30 @@ void StepLight(unsigned int Step)
 {
 	switch(Step)
 	{
-		case 1:	InOut1=1;
-				InOut2=0;
-				InOut3=0;
-				InOut4=0;
-				break;
-		case 2:	InOut1=0;
+		case 1:	InOut1=0;
 				InOut2=1;
-				InOut3=0;
-				InOut4=0;
+				InOut3=1;
+				InOut4=1;
 				break;
-		case 3:	InOut1=0;
+		case 2:	InOut1=1;
 				InOut2=0;
 				InOut3=1;
-				InOut4=0;
+				InOut4=1;
 				break;
-		case 4:	InOut1=0;
-				InOut2=0;
+		case 3:	InOut1=1;
+				InOut2=1;
 				InOut3=0;
 				InOut4=1;
 				break;
-		default:InOut1=0;
-				InOut2=0;
-				InOut3=0;
+		case 4:	InOut1=1;
+				InOut2=1;
+				InOut3=1;
 				InOut4=0;
+				break;
+		default:InOut1=1;
+				InOut2=1;
+				InOut3=1;
+				InOut4=1;
 	}
 }
 
@@ -232,8 +236,11 @@ void MotorMotionForward(void)
 	Relay1 =1;
 	Relay2 =0;
 
+	Timer_1mS=0;
 	Timer_1S =0;
 	TimerOut =0;
+
+	while(Timer_1S<5);
 
 	while(!GetPointForward());
 
@@ -248,8 +255,11 @@ void MotorMotionReverse(void)
 	Relay1 =0;
 	Relay2 =1;
 
+	Timer_1mS=0;
 	Timer_1S =0;
 	TimerOut =0;
+
+	while(Timer_1S<5);
 
 	while(!GetPointBackward());
 
@@ -270,10 +280,19 @@ void MotorStopMotion(void)
 /*----------------------------------电机回到初始位置函数----------------------------------*/
 void MotorMotionHome(void)
 {
-	if(!GetPointBackward())
-	{
-		MotorMotionReverse();
-	}
+
+	Relay1 =0;
+	Relay2 =1;
+
+	Timer_1mS=0;
+	Timer_1S =0;
+	TimerOut =0;
+
+	while(!GetPointBackward());
+
+	Relay1 =1;
+	Relay2 =1;
+
 }
 
 
