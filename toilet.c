@@ -16,9 +16,6 @@
 //20180825修改版，添加上电后电机自动运行一个流程，用于确定电机电路是否正常。
 //20180827修改，将定时时间由7秒改为6秒，原时间较长。
 //20180923修改，还是用行程开关来确定电机工作位置。并把电机运行时间加长(15秒)，防止限位失灵，程序死循环
-//20181008修改，电机运行时间过长，导致电机声音太大，现在减小时间到9秒
-//20181112修改，换接近开关传感器(常闭)，重新测试。传感器两次检测限位，防止干扰
-
 #include "STC12C20XX.h"
 
 sbit Watchdog=P3^7;  		//看门狗输出
@@ -118,7 +115,7 @@ void Timer0_Rountine(void) interrupt 1
 		Watchdog=~Watchdog;		//喂狗
 	}
 
-	if(Timer_1S >= 15)	//当电机运行时间超过此设定时间后，置位标志位TimeOut.保护电机(防止传感器故障导致电机长时间运行)
+	if(Timer_1S >= 12)	//当电机运行时间超过此设定时间后，置位标志位TimeOut.
 	{
 		Timer_1S = 0;
 		TimerOut = 1 ;
@@ -174,7 +171,7 @@ void Delay_ms (unsigned int a)
 void Delay_4S()
 {
 	Delay_ms(1000);
-	//Delay_ms(1000);
+	Delay_ms(1000);
 }
 
 
@@ -241,7 +238,7 @@ void MotorMotionForward(void)
 	Timer_1S =0;
 	TimerOut =0;
 
-	while(Timer_1S<4);	//电机先运行4秒后，再判断是否到达限位点，防止因为干扰，误触发传感器
+	while(Timer_1S<5);
 
 	while(!GetPointForward());
 
@@ -260,7 +257,7 @@ void MotorMotionReverse(void)
 	Timer_1S =0;
 	TimerOut =0;
 
-	while(Timer_1S<4);	//电机先运行4秒后，再判断是否到达限位点，防止因为干扰，误触发传感器
+	while(Timer_1S<5);
 
 	while(!GetPointBackward());
 
@@ -305,14 +302,8 @@ unsigned int GetPointForward(void)
 	
 	Point=0;
 	
-	if(Forward==1 || TimerOut==1)		//常闭传感器，当挡板接触到传感器后，断开，IO=1.
-	{	
-
-		Delay_ms(100);
-
-		if(Forward==1 || TimerOut==1)
-			Point=1;
-	}
+	if(Forward==0 || TimerOut==1)
+		Point=1;
 
 	return(Point);
 }
@@ -326,14 +317,8 @@ unsigned int GetPointBackward(void)
 	
 	Point=0;
 	
-	if(Backward==1 || TimerOut==1)		//常闭传感器，当挡板接触到传感器后，断开，IO=1.
-	{	
-
-		Delay_ms(100);
-
-		if(Backward==1 || TimerOut==1)
-			Point=1;
-	}
+	if(Backward==0 || TimerOut==1)
+		Point=1;
 
 	return(Point);
 }
