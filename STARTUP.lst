@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  STARTUP                                                              03/22/2018 16:33:34 PAGE     1
+A51 MACRO ASSEMBLER  STARTUP                                                              11/07/2017 15:34:42 PAGE     1
 
 
 MACRO ASSEMBLER A51 V7.07
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
                       55     ;------------------------------------------------------------------------------
                       56     ;
                       57     ;  Page Definition for Using the Compact Model with 64 KByte xdata RAM
-A51 MACRO ASSEMBLER  STARTUP                                                              03/22/2018 16:33:34 PAGE     2
+A51 MACRO ASSEMBLER  STARTUP                                                              11/07/2017 15:34:42 PAGE     2
 
                       58     ;
                       59     ;  The following EQU statements define the xdata page used for pdata
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
                                              MOV     PPAGE_SFR,#PPAGE
                              ENDIF
                      123     
-A51 MACRO ASSEMBLER  STARTUP                                                              03/22/2018 16:33:34 PAGE     3
+A51 MACRO ASSEMBLER  STARTUP                                                              11/07/2017 15:34:42 PAGE     3
 
                      124     IF PDATALEN <> 0
                                              MOV     R0,#LOW (PDATASTART)
@@ -169,7 +169,7 @@ LOC  OBJ            LINE     SOURCE
 0009 020000   F      155                     LJMP    ?C_START
                      156     
                      157                     END
-A51 MACRO ASSEMBLER  STARTUP                                                              03/22/2018 16:33:34 PAGE     4
+A51 MACRO ASSEMBLER  STARTUP                                                              11/07/2017 15:34:42 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------

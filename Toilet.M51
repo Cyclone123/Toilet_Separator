@@ -1,19 +1,19 @@
-BL51 BANKED LINKER/LOCATER V5.03                                                        09/23/2018  12:17:52  PAGE 1
+BL51 BANKED LINKER/LOCATER V5.03                                                        11/07/2017  15:34:42  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V5.03, INVOKED BY:
-C:\KEIL\C51\BIN\BL51.EXE toilet.obj TO Toilet RAMSIZE (256)
+C:\KEIL\C51\BIN\BL51.EXE .\STARTUP.obj, toilet.obj TO Toilet RAMSIZE (256)
 
 
 MEMORY MODEL: SMALL
 
 
 INPUT MODULES INCLUDED:
+  .\STARTUP.obj (?C_STARTUP)
   toilet.obj (TOILET)
-  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
 
 
-LINK MAP OF MODULE:  Toilet (TOILET)
+LINK MAP OF MODULE:  Toilet (?C_STARTUP)
 
 
             TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
@@ -29,25 +29,25 @@ LINK MAP OF MODULE:  Toilet (TOILET)
             CODE    0003H     0005H     UNIT         ?PR?MOTORSTOPMOTION?TOILET
                     0008H     0003H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
-            CODE    000EH     0068H     UNIT         ?PR?MAIN?TOILET
-            CODE    0076H     0046H     UNIT         ?PR?TIMER0_ROUNTINE?TOILET
-            CODE    00BCH     0037H     UNIT         ?PR?_STEPLIGHT?TOILET
-            CODE    00F3H     0028H     UNIT         ?PR?MOTORMOTIONFORWARD?TOILET
-            CODE    011BH     0028H     UNIT         ?PR?MOTORMOTIONREVERSE?TOILET
-            CODE    0143H     001DH     UNIT         ?PR?_DELAY_MS?TOILET
-            CODE    0160H     001DH     UNIT         ?PR?MOTORMOTIONHOME?TOILET
-            CODE    017DH     0015H     UNIT         ?PR?PUTBUTTONDOWN?TOILET
-            CODE    0192H     0013H     UNIT         ?PR?GETPOINTFORWARD?TOILET
-            CODE    01A5H     0013H     UNIT         ?PR?GETPOINTBACKWARD?TOILET
-            CODE    01B8H     000FH     UNIT         ?PR?STEPLIGHTINIT?TOILET
-            CODE    01C7H     000EH     UNIT         ?PR?DELAY_4S?TOILET
-            CODE    01D5H     000CH     UNIT         ?C_C51STARTUP
-            CODE    01E1H     000BH     UNIT         ?PR?RELAYOUTINIT?TOILET
-            CODE    01ECH     000AH     UNIT         ?PR?TIMER0INIT?TOILET
+            CODE    000EH     0053H     UNIT         ?PR?MAIN?TOILET
+            CODE    0061H     0042H     UNIT         ?PR?TIMER0_ROUNTINE?TOILET
+            CODE    00A3H     0037H     UNIT         ?PR?_STEPLIGHT?TOILET
+            CODE    00DAH     001DH     UNIT         ?PR?_DELAY_MS?TOILET
+            CODE    00F7H     0019H     UNIT         ?PR?MOTORMOTIONFORWARD?TOILET
+            CODE    0110H     0019H     UNIT         ?PR?MOTORMOTIONREVERSE?TOILET
+            CODE    0129H     0015H     UNIT         ?PR?PUTBUTTONDOWN?TOILET
+            CODE    013EH     0013H     UNIT         ?PR?GETPOINTFORWARD?TOILET
+            CODE    0151H     0013H     UNIT         ?PR?GETPOINTBACKWARD?TOILET
+            CODE    0164H     000FH     UNIT         ?PR?STEPLIGHTINIT?TOILET
+            CODE    0173H     000EH     UNIT         ?PR?DELAY_2S?TOILET
+            CODE    0181H     000CH     UNIT         ?C_C51STARTUP
+            CODE    018DH     000BH     UNIT         ?PR?RELAYOUTINIT?TOILET
+            CODE    0198H     000BH     UNIT         ?PR?MOTORMOTIONHOME?TOILET
+            CODE    01A3H     000AH     UNIT         ?PR?TIMER0INIT?TOILET
 
 
 
-OVERLAY MAP OF MODULE:   Toilet (TOILET)
+OVERLAY MAP OF MODULE:   Toilet (?C_STARTUP)
 
 
 SEGMENT
@@ -59,26 +59,21 @@ SEGMENT
 ?PR?MAIN?TOILET
   +--> ?PR?TIMER0INIT?TOILET
   +--> ?PR?RELAYOUTINIT?TOILET
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 2
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 2
 
 
   +--> ?PR?STEPLIGHTINIT?TOILET
   +--> ?PR?MOTORMOTIONHOME?TOILET
-  +--> ?PR?DELAY_4S?TOILET
-  +--> ?PR?MOTORMOTIONFORWARD?TOILET
-  +--> ?PR?MOTORSTOPMOTION?TOILET
-  +--> ?PR?MOTORMOTIONREVERSE?TOILET
   +--> ?PR?_STEPLIGHT?TOILET
   +--> ?PR?PUTBUTTONDOWN?TOILET
+  +--> ?PR?MOTORMOTIONFORWARD?TOILET
+  +--> ?PR?MOTORSTOPMOTION?TOILET
+  +--> ?PR?DELAY_2S?TOILET
+  +--> ?PR?MOTORMOTIONREVERSE?TOILET
 
 ?PR?MOTORMOTIONHOME?TOILET
   +--> ?PR?GETPOINTBACKWARD?TOILET
-
-?PR?DELAY_4S?TOILET
-  +--> ?PR?_DELAY_MS?TOILET
-
-?PR?MOTORMOTIONFORWARD?TOILET
-  +--> ?PR?GETPOINTFORWARD?TOILET
+  +--> ?PR?MOTORMOTIONREVERSE?TOILET
 
 ?PR?MOTORMOTIONREVERSE?TOILET
   +--> ?PR?GETPOINTBACKWARD?TOILET
@@ -86,17 +81,60 @@ SEGMENT
 ?PR?PUTBUTTONDOWN?TOILET
   +--> ?PR?_DELAY_MS?TOILET
 
+?PR?MOTORMOTIONFORWARD?TOILET
+  +--> ?PR?GETPOINTFORWARD?TOILET
+
+?PR?DELAY_2S?TOILET
+  +--> ?PR?_DELAY_MS?TOILET
 
 
-SYMBOL TABLE OF MODULE:  Toilet (TOILET)
+
+SYMBOL TABLE OF MODULE:  Toilet (?C_STARTUP)
 
   VALUE           TYPE          NAME
   ----------------------------------
 
+  -------         MODULE        ?C_STARTUP
+  C:0181H         SEGMENT       ?C_C51STARTUP
+  I:000EH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0184H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0000H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0181H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 3
+
+
+  C:0000H         LINE#         92
+  C:0181H         LINE#         99
+  C:0183H         LINE#         100
+  C:0184H         LINE#         101
+  C:0185H         LINE#         102
+  C:0187H         LINE#         151
+  C:018AH         LINE#         155
+  -------         ENDMOD        ?C_STARTUP
+
   -------         MODULE        TOILET
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0091H         PUBLIC        P1M0
-  B:0090H.4       PUBLIC        Button
+  B:0090H.7       PUBLIC        Button
   D:0080H         PUBLIC        P0
   D:0092H         PUBLIC        P1M1
   D:0090H         PUBLIC        P1
@@ -105,281 +143,263 @@ SYMBOL TABLE OF MODULE:  Toilet (TOILET)
   D:00B2H         PUBLIC        P3M1
   D:00B0H         PUBLIC        P3
   B:00A8H.7       PUBLIC        EA
-  C:0192H         PUBLIC        GetPointForward
+  C:013EH         PUBLIC        GetPointForward
+  D:0008H         PUBLIC        Timer_50mS
   D:00A8H         PUBLIC        IE
-  C:0143H         PUBLIC        _Delay_ms
+  C:00DAH         PUBLIC        _Delay_ms
   D:00B8H         PUBLIC        IP
-  C:0160H         PUBLIC        MotorMotionHome
+  C:0198H         PUBLIC        MotorMotionHome
   B:0090H.0       PUBLIC        InOut1
   B:0090H.1       PUBLIC        InOut2
-  B:0090H.6       PUBLIC        Backward
+  B:0090H.5       PUBLIC        Backward
   D:00D8H         PUBLIC        CCON
   B:0090H.2       PUBLIC        InOut3
   B:0090H.3       PUBLIC        InOut4
   C:000EH         PUBLIC        main
-  C:01B8H         PUBLIC        StepLightInit
+  C:0164H         PUBLIC        StepLightInit
   B:00B0H.0       PUBLIC        Relay1
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 3
-
-
   B:00B0H.1       PUBLIC        Relay2
   D:0098H         PUBLIC        SCON
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
   B:00B0H.7       PUBLIC        Watchdog
   C:0003H         PUBLIC        MotorStopMotion
-  D:0008H         PUBLIC        TimerOut
+  D:000AH         PUBLIC        TimerOut
   B:00A8H.1       PUBLIC        ET0
-  C:01ECH         PUBLIC        Timer0Init
+  C:01A3H         PUBLIC        Timer0Init
   D:008CH         PUBLIC        TH0
   D:008AH         PUBLIC        TL0
-  C:01E1H         PUBLIC        RelayOutInit
-  C:01A5H         PUBLIC        GetPointBackward
-  C:017DH         PUBLIC        PutButtonDown
-  D:000AH         PUBLIC        Timer_1mS
+  C:018DH         PUBLIC        RelayOutInit
+  C:0151H         PUBLIC        GetPointBackward
+  C:0129H         PUBLIC        PutButtonDown
   B:0088H.4       PUBLIC        TR0
-  C:01C7H         PUBLIC        Delay_4S
-  B:0090H.7       PUBLIC        Forward
+  C:0173H         PUBLIC        Delay_2S
+  B:0090H.4       PUBLIC        Forward
   D:00C8H         PUBLIC        T2CON
   D:000CH         PUBLIC        Timer_1S
-  C:00F3H         PUBLIC        MotorMotionForward
-  C:0076H         PUBLIC        Timer0_Rountine
-  C:011BH         PUBLIC        MotorMotionReverse
-  C:00BCH         PUBLIC        _StepLight
+  C:00F7H         PUBLIC        MotorMotionForward
+  C:0061H         PUBLIC        Timer0_Rountine
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 4
+
+
+  C:0110H         PUBLIC        MotorMotionReverse
+  C:00A3H         PUBLIC        _StepLight
   D:00D0H         PUBLIC        PSW
   -------         PROC          MAIN
-  C:000EH         LINE#         59
-  C:000EH         LINE#         60
-  C:000EH         LINE#         61
-  C:0011H         LINE#         63
-  C:0013H         LINE#         64
-  C:0015H         LINE#         65
-  C:0017H         LINE#         67
-  C:001AH         LINE#         68
-  C:001DH         LINE#         70
-  C:0022H         LINE#         71
-  C:0026H         LINE#         72
-  C:002AH         LINE#         74
-  C:002DH         LINE#         75
-  C:0030H         LINE#         76
-  C:0033H         LINE#         77
-  C:0036H         LINE#         78
-  C:0039H         LINE#         79
-  C:003CH         LINE#         80
-  C:003FH         LINE#         81
-  C:0042H         LINE#         83
-  C:0042H         LINE#         84
-  C:0042H         LINE#         85
-  C:0049H         LINE#         86
-  C:0050H         LINE#         88
-  C:0057H         LINE#         89
-  C:005AH         LINE#         91
-  C:0061H         LINE#         92
-  C:0064H         LINE#         93
-  C:0067H         LINE#         95
-  C:006EH         LINE#         96
-  C:0071H         LINE#         98
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 4
-
-
-  C:0074H         LINE#         99
+  C:000EH         LINE#         54
+  C:000EH         LINE#         55
+  C:000EH         LINE#         56
+  C:0011H         LINE#         58
+  C:0013H         LINE#         59
+  C:0015H         LINE#         60
+  C:0017H         LINE#         62
+  C:001AH         LINE#         63
+  C:001DH         LINE#         65
+  C:0022H         LINE#         66
+  C:0026H         LINE#         67
+  C:002AH         LINE#         69
+  C:002DH         LINE#         71
+  C:002DH         LINE#         72
+  C:002DH         LINE#         73
+  C:0034H         LINE#         74
+  C:003BH         LINE#         76
+  C:0042H         LINE#         77
+  C:0045H         LINE#         79
+  C:004CH         LINE#         80
+  C:004FH         LINE#         81
+  C:0052H         LINE#         83
+  C:0059H         LINE#         84
+  C:005CH         LINE#         86
+  C:005FH         LINE#         87
   -------         ENDPROC       MAIN
   -------         PROC          TIMER0_ROUNTINE
-  C:0076H         LINE#         104
-  C:007AH         LINE#         106
-  C:007DH         LINE#         107
-  C:0080H         LINE#         109
-  C:0088H         LINE#         111
-  C:0090H         LINE#         112
-  C:0090H         LINE#         113
-  C:0096H         LINE#         114
-  C:009EH         LINE#         115
-  C:00A0H         LINE#         116
-  C:00A0H         LINE#         118
-  C:00ABH         LINE#         119
-  C:00ABH         LINE#         120
-  C:00B1H         LINE#         121
-  C:00B7H         LINE#         122
-  C:00B7H         LINE#         123
+  C:0061H         LINE#         92
+  C:0065H         LINE#         94
+  C:0068H         LINE#         95
+  C:006BH         LINE#         97
+  C:0073H         LINE#         99
+  C:0079H         LINE#         100
+  C:0079H         LINE#         101
+  C:007DH         LINE#         102
+  C:0085H         LINE#         103
+  C:0085H         LINE#         105
+  C:0090H         LINE#         106
+  C:0090H         LINE#         107
+  C:0096H         LINE#         108
+  C:009CH         LINE#         109
+  C:009CH         LINE#         111
+  C:009EH         LINE#         112
   -------         ENDPROC       TIMER0_ROUNTINE
   -------         PROC          TIMER0INIT
-  C:01ECH         LINE#         127
-  C:01ECH         LINE#         128
-  C:01ECH         LINE#         129
-  C:01EFH         LINE#         131
-  C:01F2H         LINE#         132
-  C:01F5H         LINE#         133
+  C:01A3H         LINE#         116
+  C:01A3H         LINE#         117
+  C:01A3H         LINE#         118
+  C:01A6H         LINE#         120
+  C:01A9H         LINE#         121
+  C:01ACH         LINE#         122
   -------         ENDPROC       TIMER0INIT
   -------         PROC          RELAYOUTINIT
-  C:01E1H         LINE#         137
-  C:01E1H         LINE#         138
-  C:01E1H         LINE#         139
-  C:01E4H         LINE#         140
-  C:01E7H         LINE#         142
-  C:01E9H         LINE#         143
-  C:01EBH         LINE#         144
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 5
+
+
+  C:018DH         LINE#         126
+  C:018DH         LINE#         127
+  C:018DH         LINE#         128
+  C:0190H         LINE#         129
+  C:0193H         LINE#         131
+  C:0195H         LINE#         132
+  C:0197H         LINE#         133
   -------         ENDPROC       RELAYOUTINIT
   -------         PROC          STEPLIGHTINIT
-  C:01B8H         LINE#         148
-  C:01B8H         LINE#         149
-  C:01B8H         LINE#         150
-  C:01BBH         LINE#         151
-  C:01BEH         LINE#         153
-  C:01C0H         LINE#         154
-  C:01C2H         LINE#         155
-  C:01C4H         LINE#         156
-  C:01C6H         LINE#         157
+  C:0164H         LINE#         137
+  C:0164H         LINE#         138
+  C:0164H         LINE#         139
+  C:0167H         LINE#         140
+  C:016AH         LINE#         142
+  C:016CH         LINE#         143
+  C:016EH         LINE#         144
+  C:0170H         LINE#         145
+  C:0172H         LINE#         146
   -------         ENDPROC       STEPLIGHTINIT
   -------         PROC          _DELAY_MS
   D:0006H         SYMBOL        a
   -------         DO            
   D:0004H         SYMBOL        i
   -------         ENDDO         
-  C:0143H         LINE#         160
-  C:0143H         LINE#         161
-  C:0143H         LINE#         163
-  C:014CH         LINE#         164
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 5
-
-
-  C:014CH         LINE#         165
-  C:015FH         LINE#         166
-  C:015FH         LINE#         167
+  C:00DAH         LINE#         149
+  C:00DAH         LINE#         150
+  C:00DAH         LINE#         152
+  C:00E3H         LINE#         153
+  C:00E3H         LINE#         154
+  C:00F6H         LINE#         155
+  C:00F6H         LINE#         156
   -------         ENDPROC       _DELAY_MS
-  -------         PROC          DELAY_4S
-  C:01C7H         LINE#         171
-  C:01C7H         LINE#         172
-  C:01C7H         LINE#         173
-  C:01CEH         LINE#         174
-  -------         ENDPROC       DELAY_4S
+  -------         PROC          DELAY_2S
+  C:0173H         LINE#         160
+  C:0173H         LINE#         161
+  C:0173H         LINE#         162
+  C:017AH         LINE#         163
+  -------         ENDPROC       DELAY_2S
   -------         PROC          PUTBUTTONDOWN
   -------         DO            
   D:0002H         SYMBOL        Flag
   -------         ENDDO         
-  C:017DH         LINE#         180
-  C:017DH         LINE#         181
-  C:017DH         LINE#         183
-  C:0180H         LINE#         185
-  C:0183H         LINE#         186
-  C:0183H         LINE#         187
-  C:0189H         LINE#         189
-  C:018CH         LINE#         190
-  C:018DH         LINE#         191
-  C:018DH         LINE#         193
-  C:0191H         LINE#         194
+  C:0129H         LINE#         169
+  C:0129H         LINE#         170
+  C:0129H         LINE#         172
+  C:012CH         LINE#         174
+  C:012FH         LINE#         175
+  C:012FH         LINE#         176
+  C:0135H         LINE#         178
+  C:0138H         LINE#         179
+  C:0139H         LINE#         180
+  C:0139H         LINE#         182
+  C:013DH         LINE#         183
   -------         ENDPROC       PUTBUTTONDOWN
   -------         PROC          _STEPLIGHT
   D:0006H         SYMBOL        Step
-  C:00BCH         LINE#         198
-  C:00BCH         LINE#         199
-  C:00BCH         LINE#         200
-  C:00CEH         LINE#         201
-  C:00CEH         LINE#         202
-  C:00D0H         LINE#         203
-  C:00D0H         LINE#         204
-  C:00D0H         LINE#         205
-  C:00D0H         LINE#         206
-  C:00D2H         LINE#         207
-  C:00D4H         LINE#         208
-  C:00D6H         LINE#         209
-  C:00D6H         LINE#         210
-  C:00D6H         LINE#         211
-  C:00D8H         LINE#         212
-  C:00DAH         LINE#         213
-  C:00DCH         LINE#         214
-  C:00DEH         LINE#         215
-  C:00E0H         LINE#         216
-  C:00E1H         LINE#         217
-  C:00E3H         LINE#         218
-  C:00E5H         LINE#         219
-  C:00E7H         LINE#         220
-  C:00E9H         LINE#         221
-  C:00EAH         LINE#         222
-  C:00ECH         LINE#         223
-  C:00EEH         LINE#         224
-  C:00F0H         LINE#         225
-  C:00F2H         LINE#         226
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 6
+  C:00A3H         LINE#         187
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 6
 
 
-  C:00F2H         LINE#         227
+  C:00A3H         LINE#         188
+  C:00A3H         LINE#         189
+  C:00B5H         LINE#         190
+  C:00B5H         LINE#         191
+  C:00B7H         LINE#         192
+  C:00B7H         LINE#         193
+  C:00B7H         LINE#         194
+  C:00B7H         LINE#         195
+  C:00B9H         LINE#         196
+  C:00BBH         LINE#         197
+  C:00BDH         LINE#         198
+  C:00BDH         LINE#         199
+  C:00BDH         LINE#         200
+  C:00BFH         LINE#         201
+  C:00C1H         LINE#         202
+  C:00C3H         LINE#         203
+  C:00C5H         LINE#         204
+  C:00C7H         LINE#         205
+  C:00C8H         LINE#         206
+  C:00CAH         LINE#         207
+  C:00CCH         LINE#         208
+  C:00CEH         LINE#         209
+  C:00D0H         LINE#         210
+  C:00D1H         LINE#         211
+  C:00D3H         LINE#         212
+  C:00D5H         LINE#         213
+  C:00D7H         LINE#         214
+  C:00D9H         LINE#         215
+  C:00D9H         LINE#         216
   -------         ENDPROC       _STEPLIGHT
   -------         PROC          MOTORMOTIONFORWARD
-  C:00F3H         LINE#         232
-  C:00F3H         LINE#         233
-  C:00F3H         LINE#         234
-  C:00F5H         LINE#         235
-  C:00F7H         LINE#         237
-  C:00FCH         LINE#         238
-  C:0100H         LINE#         239
-  C:0104H         LINE#         241
-  C:010FH         LINE#         243
-  C:0116H         LINE#         245
-  C:0118H         LINE#         246
-  C:011AH         LINE#         247
+  C:00F7H         LINE#         221
+  C:00F7H         LINE#         222
+  C:00F7H         LINE#         223
+  C:00F9H         LINE#         224
+  C:00FBH         LINE#         226
+  C:0100H         LINE#         227
+  C:0104H         LINE#         229
+  C:010BH         LINE#         231
+  C:010DH         LINE#         232
+  C:010FH         LINE#         233
   -------         ENDPROC       MOTORMOTIONFORWARD
   -------         PROC          MOTORMOTIONREVERSE
-  C:011BH         LINE#         251
-  C:011BH         LINE#         252
-  C:011BH         LINE#         253
-  C:011DH         LINE#         254
-  C:011FH         LINE#         256
-  C:0124H         LINE#         257
-  C:0128H         LINE#         258
-  C:012CH         LINE#         260
-  C:0137H         LINE#         262
-  C:013EH         LINE#         264
-  C:0140H         LINE#         265
-  C:0142H         LINE#         266
+  C:0110H         LINE#         237
+  C:0110H         LINE#         238
+  C:0110H         LINE#         239
+  C:0112H         LINE#         240
+  C:0114H         LINE#         242
+  C:0119H         LINE#         243
+  C:011DH         LINE#         245
+  C:0124H         LINE#         247
+  C:0126H         LINE#         248
+  C:0128H         LINE#         249
   -------         ENDPROC       MOTORMOTIONREVERSE
   -------         PROC          MOTORSTOPMOTION
-  C:0003H         LINE#         270
-  C:0003H         LINE#         271
-  C:0003H         LINE#         272
-  C:0005H         LINE#         273
-  C:0007H         LINE#         274
+  C:0003H         LINE#         253
+  C:0003H         LINE#         254
+BL51 BANKED LINKER/LOCATER V5.03                                                      11/07/2017  15:34:42  PAGE 7
+
+
+  C:0003H         LINE#         255
+  C:0005H         LINE#         256
+  C:0007H         LINE#         257
   -------         ENDPROC       MOTORSTOPMOTION
   -------         PROC          MOTORMOTIONHOME
-  C:0160H         LINE#         279
-  C:0160H         LINE#         280
-  C:0160H         LINE#         282
-  C:0162H         LINE#         283
-  C:0164H         LINE#         285
-  C:0169H         LINE#         286
-  C:016DH         LINE#         287
-  C:0171H         LINE#         289
-  C:0178H         LINE#         291
-  C:017AH         LINE#         292
-  C:017CH         LINE#         294
+  C:0198H         LINE#         262
+  C:0198H         LINE#         263
+  C:0198H         LINE#         264
+  C:019FH         LINE#         265
+  C:019FH         LINE#         266
+  C:01A2H         LINE#         267
+  C:01A2H         LINE#         268
   -------         ENDPROC       MOTORMOTIONHOME
   -------         PROC          GETPOINTFORWARD
   -------         DO            
   D:0006H         SYMBOL        Point
   -------         ENDDO         
-  C:0192H         LINE#         299
-  C:0192H         LINE#         300
-  C:0192H         LINE#         303
-BL51 BANKED LINKER/LOCATER V5.03                                                      09/23/2018  12:17:52  PAGE 7
-
-
-  C:0195H         LINE#         305
-  C:01A0H         LINE#         306
-  C:01A4H         LINE#         308
-  C:01A4H         LINE#         309
+  C:013EH         LINE#         273
+  C:013EH         LINE#         274
+  C:013EH         LINE#         277
+  C:0141H         LINE#         279
+  C:014CH         LINE#         280
+  C:0150H         LINE#         282
+  C:0150H         LINE#         283
   -------         ENDPROC       GETPOINTFORWARD
   -------         PROC          GETPOINTBACKWARD
   -------         DO            
   D:0006H         SYMBOL        Point
   -------         ENDDO         
-  C:01A5H         LINE#         314
-  C:01A5H         LINE#         315
-  C:01A5H         LINE#         318
-  C:01A8H         LINE#         320
-  C:01B3H         LINE#         321
-  C:01B7H         LINE#         323
-  C:01B7H         LINE#         324
+  C:0151H         LINE#         288
+  C:0151H         LINE#         289
+  C:0151H         LINE#         292
+  C:0154H         LINE#         294
+  C:015FH         LINE#         295
+  C:0163H         LINE#         297
+  C:0163H         LINE#         298
   -------         ENDPROC       GETPOINTBACKWARD
   -------         ENDMOD        TOILET
 
-Program Size: data=15.0 xdata=0 code=499
+Program Size: data=15.0 xdata=0 code=426
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -5,6 +5,7 @@ Target (Target 1), 0x0000 // Tools: 'MCS-51'
 
 Group (Source Group 1)
 
+File 1,2,<C:\Documents and Settings\Administrator\×ÀÃæ\Toilet\STARTUP.A51><STARTUP.A51> 0x0 
 File 1,1,<.\toilet.c><toilet.c> 0x0 
 File 1,5,<.\STC12C20XX.h><STC12C20XX.h> 0x0 
 
@@ -107,9 +108,9 @@ Options 1,0,0  // Target 'Target 1'
  LX51DAS ()
  LX51IDS ()
   OPTDL (S8051.DLL)()(DP51.DLL)(-p51)(S8051.DLL)()(TP51.DLL)(-p51)
-  OPTDBG 44029,-1,()()()()()()()()()() (BIN\MON51.DLL)()()()
- FLASH1 { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+  OPTDBG 44029,0,()()()()()()()()()() ()()()()
+ FLASH1 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
  FLASH2 ()
- FLASH3 ("" ())
+ FLASH3 ()
 EndOpt
 
