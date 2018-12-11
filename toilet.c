@@ -98,6 +98,7 @@ void main(void)
 		MotorMotionReverse();
 
 		Delay_4S();
+
 	}
 }
 
@@ -173,7 +174,7 @@ void Delay_ms (unsigned int a)
 void Delay_4S()
 {
 	Delay_ms(1000);
-	//Delay_ms(1000);
+	Delay_ms(1000);
 }
 
 
